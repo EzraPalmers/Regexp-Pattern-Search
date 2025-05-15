@@ -1,0 +1,10 @@
+# Ignore all files by default
+*
+
+# Allow Java source files
+!*.java
+!/src
+# Allow project metadata
+!.gitignore
+!README.txt
+
