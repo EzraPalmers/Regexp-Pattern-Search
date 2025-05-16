@@ -130,20 +130,11 @@ public class REsearch {
                                 queue.addFirst(n2);
                             }
                         } else if (type.equals("WC") || fileLine.charAt(i) == type.charAt(0)) {
-                            // Wildcard: Match any character || Literal if char in text matches
-                            // Queue based on next state type
+                            // Wildcard: Match any character || Literal: if char in text matches
                             matchedChar = true;
-                            if (n1 == -1 || stateType.get(n1).equals("BR")) {
-                                queue.addFirst(n1); // Next is BR
-                            } else {
-                                queue.addLast(n1); // Next is literal or WC
-                            }
+                            queue.addLast(n1);
                             if (n1 != n2) {
-                                if (n2 == -1 || stateType.get(n2).equals("BR")) {
-                                    queue.addFirst(n2); // Next is BR
-                                } else {
-                                    queue.addLast(n2); // Next is literal or WC
-                                }
+                                queue.addLast(n2); // Next is literal or WC
                             }
                         }
                     }
@@ -153,6 +144,25 @@ public class REsearch {
                     if (matched) {
                         System.out.println(fileLine);
                         break;
+                    }
+                }
+                // Process any remaining states on queue
+                // Input is consumed so only BR and -1 states are valid
+                if (!matched) {
+                    while (queue.peek() != null) {
+                        int s = queue.poll();
+                        if (s == -1) {
+                            System.out.println(fileLine);
+                            break;
+                        }
+                        if (stateType.get(s).equals("BR")) {
+                            int n1 = next1.get(s);
+                            int n2 = next2.get(s);
+                            queue.addFirst(n1);
+                            if (n1 != n2) {
+                                queue.addFirst(n2);
+                            }
+                        }
                     }
                 }
             }
