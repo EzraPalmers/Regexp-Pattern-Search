@@ -308,10 +308,10 @@ public class REcompile {
                 next2.set(i, next2.get(next));
             }
             // Check if n1 or n2 pointing at dummy state
-            while (dummyIndices.contains(next1.get(i)) && next1.get(i) != -1) {
+            while (dummyIndices.contains(next1.get(i))) {
                 next1.set(i, next1.get(next1.get(i))); // Update to match dummy state
             }
-            while (dummyIndices.contains(next2.get(i)) && next2.get(i) != -1) {
+            while (dummyIndices.contains(next2.get(i))) {
                 next2.set(i, next2.get(next2.get(i))); // Update to match dummy state
             }
         }

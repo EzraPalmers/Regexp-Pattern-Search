@@ -82,29 +82,32 @@ public class REsearch {
             String[] parts = line.split(",");
             if (parts.length == 4) { // Normal case
                 stateType.add(parts[1]);
-                next1.add(Integer.parseInt(parts[2]));
-                next2.add(Integer.parseInt(parts[3]));
+                next1.add(Integer.valueOf(parts[2]));
+                next2.add(Integer.valueOf(parts[3]));
             } else { // Comma literal (parts.length == 5)
                 stateType.add(",");
-                next1.add(Integer.parseInt(parts[3]));
-                next2.add(Integer.parseInt(parts[4]));
+                next1.add(Integer.valueOf(parts[3]));
+                next2.add(Integer.valueOf(parts[4]));
             }
         }
         try (// Read the input file line by line and simulate the FSM on each line
                 BufferedReader fileReader = new BufferedReader(new FileReader(filename))) {
             String fileLine;
             while ((fileLine = fileReader.readLine()) != null) {
-                // Flag to indicate if the line matches the FSM
-                boolean matched = false;
-                // Try matching starting from each character in the line
+                boolean matched = false; // Flag to indicate if the line matches the regex
+                boolean matchedChar = false; // Track if a literal has been matched this line
                 MyDeque<Integer> queue = new MyDeque<>();
                 Set<Integer> visited = new HashSet<>();
+                // Try matching starting from each character in the line
                 for (int i = 0; i < fileLine.length(); i++) {
                     queue.addLast(0); // New possible match from state 0
                     queue.addLast(SCAN); // Marker to seperate possible current from possible next states
                     while (queue.peek() != SCAN) {
                         int s = queue.poll();
                         if (s == -1) { // Accept State
+                            if (!matchedChar) {
+                                throw new IllegalStateException("Regex matched without a character match");
+                            }
                             matched = true;
                             break;
                         }
@@ -125,6 +128,7 @@ public class REsearch {
                         } else if (type.equals("WC") || fileLine.charAt(i) == type.charAt(0)) {
                             // Wildcard: Match any character || Literal if char in text matches
                             // Queue based on next state type
+                            matchedChar = true;
                             if (n1 == -1 || stateType.get(n1).equals("BR")) {
                                 queue.addFirst(n1); // Next is BR
                             } else {
