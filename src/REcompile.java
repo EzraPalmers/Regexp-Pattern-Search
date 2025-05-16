@@ -1,14 +1,13 @@
 /*
- * Author: Ezra Palmers
- * ID: 1293020
- * Last modified: 15/05/25
+ * Author: Ezra Palmers (ID: 1293020)
+ * Last modified: 16/05/25
  * 
  * Phrase Structure Rules
  * Expression -> Term -> Factor -> Atom
  * 
  * E -> T
  * E -> T|E			Alternation
- * T -> F       
+ * T -> F
  * T -> FT			Concatenation
  * F -> A
  * F -> A*			Zero or more
@@ -16,7 +15,7 @@
  * F -> A+			One or more
  * A -> Literal		Non-special characters
  * A -> .			Wildcard (Any literal)
- * A -> \ AnySymbol	Escape character (Next char is interpreted as a literal) 
+ * A -> \ AnySymbol	Escape character (Next char is interpreted as a literal)
  * A -> (E)			Parentheses
  *
  */
@@ -46,10 +45,10 @@ public class REcompile {
         regex = args[0].toCharArray();
 
         // Check for compression flag
-        boolean compress = false; // Default no compression
+        boolean compress = true; // Default no compression
         if (args.length == 2) {
             if (args[1].equals("-c")) {
-                compress = true;
+                compress = false;
             } else {
                 System.err.println("Error: Invalid second argument");
                 printUsage();
@@ -241,11 +240,11 @@ public class REcompile {
         }
     }
 
-    // Print
+    // Print usage details
     private static void printUsage() {
         System.err.println("Usage: REcompile <regex> [-c]");
         System.err.println("  <regex>  Required. The regular expression to compile");
-        System.err.println("  -c       Optional. Enable FSM compression");
+        System.err.println("  -c       Optional. Disable FSM compression");
     }
 
     // Checks that all open brackets are followed by equal number of close brackets

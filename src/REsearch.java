@@ -1,3 +1,6 @@
+// Authors: Ezra Palmers (ID: 1293020), Minh Nguyen (ID: 1618568)
+// Last modified: 16/05/25
+
 import java.io.*;
 import java.util.*;
 
@@ -70,7 +73,7 @@ public class REsearch {
     public static void main(String[] args) throws Exception {
         // Ensure the user provides exactly one argument (filename to search)
         if (args.length != 1) {
-            System.out.println("Usage: java REsearch textfile.txt < fsm.txt (or pipe from 'java REcompile \"regex\"')");
+            System.err.println("Usage: java REsearch textfile.txt < fsm.txt (or pipe from 'java REcompile \"regex\"')");
             return;
         }
         // Input text file
@@ -93,9 +96,10 @@ public class REsearch {
         try (// Read the input file line by line and simulate the FSM on each line
                 BufferedReader fileReader = new BufferedReader(new FileReader(filename))) {
             String fileLine;
+            boolean fsmMatchedEmptyString = false; // Track if any line matched without matching a char
             while ((fileLine = fileReader.readLine()) != null) {
                 boolean matched = false; // Flag to indicate if the line matches the regex
-                boolean matchedChar = false; // Track if a literal has been matched this line
+                boolean matchedChar = false; // Track if a char has been matched this line
                 MyDeque<Integer> queue = new MyDeque<>();
                 Set<Integer> visited = new HashSet<>();
                 // Try matching starting from each character in the line
@@ -106,7 +110,7 @@ public class REsearch {
                         int s = queue.poll();
                         if (s == -1) { // Accept State
                             if (!matchedChar) {
-                                throw new IllegalStateException("Regex matched without a character match");
+                                fsmMatchedEmptyString = true;
                             }
                             matched = true;
                             break;
@@ -151,6 +155,9 @@ public class REsearch {
                         break;
                     }
                 }
+            }
+            if (fsmMatchedEmptyString) {
+                System.err.println("Regex matched without a character match");
             }
         }
     }
